@@ -1,35 +1,39 @@
-# Nombre de la libreria estatica
-NAME = get_next_line.a
+# **************************************************************************** #
+#                                  Makefile                                    #
+# **************************************************************************** #
 
-# Compilador y flags
-CC = cc
-CFLAGS = -Wall -Wextra -Werror
-BUFFER_SIZE ?= 42  # Valor por defecto, pero se puede cambiar al llamar a 'make'
+NAME		= get_next_line_bonus.a
 
-# Archivos fuente y objetos
-SRCS = get_next_line.c get_next_line_utils.c
-OBJS = $(SRCS:.c=.o)
+CC			= cc
+CFLAGS		= -Wall -Wextra -Werror -D BUFFER_SIZE=$(BUFFER_SIZE)
 
-# Regla principal: compila todos los objetos y crea la biblioteca
+# BUFFER_SIZE por defecto si no se pasa como argumento
+BUFFER_SIZE ?= 42
+
+# Archivos fuente de la parte bonus
+SRCS_BONUS	= get_next_line_bonus.c get_next_line_utils_bonus.c
+OBJS_BONUS	= $(SRCS_BONUS:.c=.o)
+
+# Regla por defecto
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	ar rcs $(NAME) $(OBJS)
+# Compila la versión obligatoria (solo formalidad)
+$(NAME): bonus
 
-# Regla para compilar cada .c en .o
-%.o: %.c
-	$(CC) $(CFLAGS) -D BUFFER_SIZE=$(BUFFER_SIZE) -c $< -o $@
+# Regla para compilar la versión bonus
+bonus: $(OBJS_BONUS)
+	ar rcs $(NAME) $(OBJS_BONUS)
 
-# Limpia los objetos
+# Limpia archivos objeto
 clean:
-	rm -f $(OBJS)
+	rm -f $(OBJS_BONUS)
 
-# Limpia objetos y el ejecutable/biblioteca
+# Limpieza completa
 fclean: clean
 	rm -f $(NAME)
 
-# Recompila desde cero
+# Recompilación
 re: fclean all
 
-# Evita conflictos con nombres de archivos
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus
+
