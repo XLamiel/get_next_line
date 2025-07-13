@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_free_and_null(char **prt)
 {
@@ -80,21 +80,21 @@ int	ft_loop_until_newline(int fd, char **storage, char *buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	*storage;
+	static char	*storage[OPEN_MAX];
 	char		*buffer;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || fd >= OPEN_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
 	buffer = (char *)malloc(BUFFER_SIZE + 1);
 	if (!buffer)
-		return (ft_free_and_null(&storage));
-	if (!ft_loop_until_newline(fd, &storage, buffer))
+		return (ft_free_and_null(&storage[fd]));
+	if (!ft_loop_until_newline(fd, &storage[fd], buffer))
 	{
 		ft_free_and_null(&buffer);
-		return (ft_free_and_null(&storage));
+		return (ft_free_and_null(&storage[fd]));
 	}
 	ft_free_and_null(&buffer);
-	if (!storage || !*storage)
-		return (ft_free_and_null(&storage));
-	return (ft_extract_line(&storage));
+	if (!storage[fd] || !*storage[fd])
+		return (ft_free_and_null(&storage[fd]));
+	return (ft_extract_line(&storage[fd]));
 }
